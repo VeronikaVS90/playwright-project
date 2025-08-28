@@ -19,8 +19,8 @@ pids
 lib-cov
 
 # Directories with report and results
-playwright-report
-test-results
+playwright-report/
+test-results/
 
 # Coverage directory used by tools like istanbul
 coverage
