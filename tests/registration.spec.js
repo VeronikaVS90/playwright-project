@@ -40,7 +40,7 @@ test.describe("verifying positive and negative cases (POM, JS)", () => {
 
   test("Last name field - too long validation", async ({ home, signUp }) => {
     await home.openSignUp();
-    await signUp.lastNameInput.fill("S".repeat(25));
+    await signUp.fillLastName("S".repeat(25));
     await signUp.blur();
     await expect(
       signUp.getErrorByText("Last name has to be from 2 to 20 characters long")
