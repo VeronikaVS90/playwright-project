@@ -32,7 +32,7 @@ test.describe("verifying positive and negative cases (POM, JS)", () => {
 
   test("Last Name field - required validation", async ({ home, signUp }) => {
     await home.openSignUp();
-    await signUp.lastNameInput.click();
+    await signUp.clickLastNameInput();
     await signUp.blur();
     await expect(signUp.getErrorByText("Last name required")).toBeVisible();
     await signUp.expectFieldRedBorder(signUp.lastNameInput);
