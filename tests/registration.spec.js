@@ -49,7 +49,7 @@ test.describe("verifying positive and negative cases (POM, JS)", () => {
 
   test("Email field - entry validation", async ({ home, signUp }) => {
     await home.openSignUp();
-    await signUp.emailInput.fill("veronikavsgmail.com");
+    await signUp.fillEmail("veronikavsgmail.com")
     await signUp.lastNameInput.click();
     await expect(signUp.getErrorByText("Email is incorrect")).toBeVisible();
     await signUp.expectFieldRedBorder(signUp.emailInput);
