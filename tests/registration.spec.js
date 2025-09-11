@@ -65,7 +65,7 @@ test.describe("verifying positive and negative cases (POM, JS)", () => {
 
   test("Password field - entry validation", async ({ home, signUp }) => {
     await home.openSignUp();
-    await signUp.passwordInput.fill("123");
+    await signUp.fillPassword("123");
     await signUp.blur();
     await expect(
       signUp.getErrorByText(
