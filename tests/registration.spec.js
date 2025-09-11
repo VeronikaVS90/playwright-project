@@ -57,7 +57,7 @@ test.describe("verifying positive and negative cases (POM, JS)", () => {
 
   test("Password field - required validation", async ({ home, signUp }) => {
     await home.openSignUp();
-    await signUp.passwordInput.click();
+    await signUp.clickPasswordInput();
     await signUp.blur();
     await expect(signUp.getErrorByText("Password required")).toBeVisible();
     await signUp.expectFieldRedBorder(signUp.passwordInput);
