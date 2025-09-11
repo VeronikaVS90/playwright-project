@@ -15,7 +15,7 @@ test.describe("verifying positive and negative cases (POM, JS)", () => {
 
   test("Name field - required validation", async ({ home, signUp }) => {
     await home.openSignUp();
-    await signUp.nameInput.click();
+    await signUp.clickNameInput();
     await signUp.blur();
     await expect(signUp.getErrorByText("Name required")).toBeVisible();
     await signUp.expectFieldRedBorder(signUp.nameInput);
