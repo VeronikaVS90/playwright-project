@@ -1,7 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 import * as dotenv from "dotenv";
-
 dotenv.config();
+
+const STORAGE_STATE = "auth/user-storage-state.json";
 
 export default defineConfig({
   testDir: "./tests",
@@ -28,20 +29,19 @@ export default defineConfig({
       testMatch: /tests\/setup\/auth\.setup\.spec\.js/,
       use: { ...devices["Desktop Chrome"] },
     },
-
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: { ...devices["Desktop Chrome"], storageState: STORAGE_STATE },
       dependencies: ["auth-setup"],
     },
     {
       name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      use: { ...devices["Desktop Firefox"], storageState: STORAGE_STATE },
       dependencies: ["auth-setup"],
     },
     {
       name: "webkit",
-      use: { ...devices["Desktop Safari"] },
+      use: { ...devices["Desktop Safari"], storageState: STORAGE_STATE },
       dependencies: ["auth-setup"],
     },
   ],
