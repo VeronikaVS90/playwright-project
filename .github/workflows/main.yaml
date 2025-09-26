@@ -1,0 +1,84 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  playwright:
+    name: Playwright (Docker)
+    runs-on: ubuntu-latest
+
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-jammy
+      options: --ipc=host
+
+    timeout-minutes: 60
+
+    env:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      CI: "true"
+      BASE_URL: ${{ secrets.BASE_URL }}
+      AUTH_USER: ${{ secrets.AUTH_USER }}
+      AUTH_PASS: ${{ secrets.AUTH_PASS }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node from container & cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-
+
+      - name: Print versions (debug)
+        run: |
+          node -v
+          npm -v
+          npx playwright --version
+          cat package.json | jq '.dependencies["@playwright/test"]'
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm i
+          fi
+
+      - name: Run Playwright tests (all projects)
+        run: |
+          npx playwright test
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: traces
+          path: |
+            test-results/**/*.zip
+            test-results/**/*.trace.zip
+          retention-days: 7
+
+      - name: Upload screenshots & videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: media
+          path: |
+            test-results/**/*.png
+            test-results/**/*.webm
+          retention-days: 7
