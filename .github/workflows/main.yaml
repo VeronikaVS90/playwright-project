@@ -16,11 +16,11 @@ jobs:
     timeout-minutes: 30
 
     env:
-      CI: "true"
-      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
-      BASE_URL: ${{ secrets.BASE_URL }} # має бути з http/https
-      AUTH_USER: ${{ secrets.AUTH_USER }}
-      AUTH_PASS: ${{ secrets.AUTH_PASS }}
+  BASE_URL: ${{ vars.BASE_URL }}
+  AUTH_USER: ${{ vars.AUTH_USER }}
+  AUTH_PASS: ${{ vars.AUTH_PASS }}
+  E2E_USER_EMAIL: ${{ vars.E2E_USER_EMAIL }}
+  E2E_USER_PASSWORD: ${{ vars.E2E_USER_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v4
