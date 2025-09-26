@@ -10,16 +10,14 @@ jobs:
   playwright:
     name: Playwright (Docker)
     runs-on: ubuntu-latest
-
     container:
       image: mcr.microsoft.com/playwright:v1.55.0-jammy
       options: --ipc=host
-
     timeout-minutes: 60
 
     env:
-      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
       CI: "true"
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
       BASE_URL: ${{ secrets.BASE_URL }}
       AUTH_USER: ${{ secrets.AUTH_USER }}
       AUTH_PASS: ${{ secrets.AUTH_PASS }}
@@ -28,20 +26,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node from container & cache npm
+      - name: Cache npm
         uses: actions/cache@v4
         with:
           path: ~/.npm
           key: npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             npm-
-
-      - name: Print versions (debug)
-        run: |
-          node -v
-          npm -v
-          npx playwright --version
-          cat package.json | jq '.dependencies["@playwright/test"]'
 
       - name: Install dependencies
         run: |
@@ -51,9 +42,15 @@ jobs:
             npm i
           fi
 
-      - name: Run Playwright tests (all projects)
+      - name: Print versions (debug)
         run: |
-          npx playwright test
+          node -v
+          npm -v
+          node -e "console.log('@@ @playwright/test version:', require('@playwright/test/package.json').version)"
+          npx -y @playwright/test --version
+
+      - name: Run Playwright tests
+        run: npx playwright test
 
       - name: Upload HTML report
         if: always()
