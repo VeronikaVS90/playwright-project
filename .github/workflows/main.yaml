@@ -1,10 +1,11 @@
 name: Playwright API Tests
-# comment
+
 on:
   push:
-    branches: [main, master]
+    branches: ["**"]
   pull_request:
-    branches: [main, master]
+    branches: ["**"]
+  workflow_dispatch: {}
 
 jobs:
   playwright:
@@ -16,11 +17,13 @@ jobs:
     timeout-minutes: 30
 
     env:
-  BASE_URL: ${{ vars.BASE_URL }}
-  AUTH_USER: ${{ vars.AUTH_USER }}
-  AUTH_PASS: ${{ vars.AUTH_PASS }}
-  E2E_USER_EMAIL: ${{ vars.E2E_USER_EMAIL }}
-  E2E_USER_PASSWORD: ${{ vars.E2E_USER_PASSWORD }}
+      CI: "true"
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      BASE_URL: ${{ vars.BASE_URL }}
+      AUTH_USER: ${{ vars.AUTH_USER }}
+      AUTH_PASS: ${{ vars.AUTH_PASS }}
+      E2E_USER_EMAIL: ${{ vars.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ vars.E2E_USER_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v4
@@ -34,6 +37,10 @@ jobs:
 
       - name: Install deps
         run: npm ci
+
+      - name: Validate BASE_URL
+        run: |
+          node -e "const u=process.env.BASE_URL; if(!u){throw new Error('BASE_URL is empty')}; try{new URL(u)}catch{throw new Error('Invalid BASE_URL: '+u)}"
 
       - name: Run ONLY cars.api.spec.js (API config)
         run: npx playwright test -c playwright.api.config.js tests/api/cars.api.spec.js
